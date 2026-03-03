@@ -2,80 +2,95 @@ import produtos from "../models/produto.model.js";
 
 const produtoController = {
 
-    // Função responsável pelo upload de arquivo (ex: imagem do produto)
+    // Upload de imagem (caso esteja usando multer)
     uploadArquivo: async (req, res) => {
         try {
-            // Verifica se nenhum arquivo foi enviado na requisição
+
             if (!req.file) {
-                return res.status(400).json({ mensagem: 'Nenhum arquivo foi enviado' });
+                return res.status(400).json({
+                    mensagem: "Nenhum arquivo enviado"
+                });
             }
 
-            // Retorna sucesso caso o upload tenha sido realizado
-            return res.status(200).json({ mensagem: 'Upload concluído com sucesso' });
+            return res.status(200).json({
+                mensagem: "Upload realizado com sucesso",
+                arquivo: req.file.filename
+            });
 
         } catch (erro) {
-            // Exibe erro no console do servidor
             console.error(erro);
-
-            // Retorna erro interno
-            res.status(500).json({ 
-                mensagem: 'Erro interno no servidor', 
-                detalheErro: erro.message 
+            return res.status(500).json({
+                mensagem: "Erro interno no servidor",
+                detalheErro: erro.message
             });
         }
     },
 
-    // Função responsável por cadastrar um novo produto
+    // Criar produto
     cadastrarProduto: async (req, res) => {
         try {
-            const dadosProduto = req.body;
 
-            console.log(dadosProduto);
+            const {
+                idCategoria,
+                nomeProduto,
+                valorProduto,
+                vinculoImagem,
+                dataCad
+            } = req.body;
 
-            // Chama o model para inserir os dados no banco
-            const resposta = await produtos.criarProduto({
-                idCategoria: dadosProduto.idCategoria,
-                nomeProduto: dadosProduto.nomeProduto,
-                valorProduto: dadosProduto.valorProduto,
-                vinculoImagem: dadosProduto.vinculoImagem,
-                dataCadastro: dadosProduto.dataCad
-            });
+            console.log("BODY RECEBIDO:", req.body);
 
-            // Verifica se o produto foi inserido com sucesso
-            if (resposta.insertId > 0) {
-                return res.status(201).json({ mensagem: 'Produto cadastrado com sucesso' });
+            // Validação básica
+            if (!idCategoria || !nomeProduto || !valorProduto || !dataCad) {
+                return res.status(400).json({
+                    mensagem: "Campos obrigatórios não enviados"
+                });
             }
 
-            // Caso não insira corretamente
-            res.status(400).json({ mensagem: 'Erro ao cadastrar o produto' });
+            const resposta = await produtos.criarProduto({
+                idCategoria,
+                nomeProduto,
+                valorProduto,
+                vinculoImagem: vinculoImagem || null,
+                dataCad
+            });
+
+            if (resposta.insertId > 0) {
+                return res.status(201).json({
+                    mensagem: "Produto cadastrado com sucesso"
+                });
+            }
+
+            return res.status(400).json({
+                mensagem: "Erro ao cadastrar produto"
+            });
 
         } catch (erro) {
             console.error(erro);
-
-            res.status(500).json({ 
-                mensagem: 'Erro interno no servidor', 
-                detalheErro: erro.message 
+            return res.status(500).json({
+                mensagem: "Erro interno no servidor",
+                detalheErro: erro.message
             });
         }
     },
 
-    // Função responsável por listar todos os produtos
+    // Listar produtos
     listarTodos: async (req, res) => {
         try {
-            const listaProdutos = await produtos.selecionarTodos();
+
+            const listaProdutos = await produtos.selectALL();
 
             return res.status(200).json(listaProdutos);
 
         } catch (erro) {
             console.error(erro);
-
-            res.status(500).json({ 
-                mensagem: 'Erro interno no servidor', 
-                detalheErro: erro.message 
+            return res.status(500).json({
+                mensagem: "Erro interno no servidor",
+                detalheErro: erro.message
             });
         }
     }
+
 };
 
-// Exporta o controller
 export default produtoController;

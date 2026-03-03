@@ -1,23 +1,30 @@
 import pool from "../config/db.js";
 
 const categorias = {
-    insert:async (pProduto) => {
-        const sql = 'INSERT INTO produtos (id_categoria, descricao_categoria, data_cad) VALUES (?,?,?);';
-        const values = [pProduto.id_categoria, pProduto.descricao_categoria, pProduto.data_cad];
-        const [rows] = await pool.execute(sql, values);
-        return rows;
-    }, 
+
+    // Inserir categoria
+    insert: async (categoria) => {
+        const sql = `
+            INSERT INTO categoria (descricao_categoria, data_cad)
+            VALUES (?, ?)
+        `;
+
+        const values = [
+            categoria.descricaoCategoria,
+            categoria.dataCad
+        ];
+
+        const [result] = await pool.execute(sql, values);
+        return result;
+    },
+
+    // Selecionar todas
     selectALL: async () => {
-        const sql = "SELECT * FROM produtos";
+        const sql = "SELECT * FROM categoria";
         const [rows] = await pool.execute(sql);
         return rows;
-    },
-    updatecategorias: async (pProduto) => {
-        const sql = 'UPDATE Produtos SET idCategoria = ?, descrição_categoria = ?, dataCad = ? WHERE idProduto = ?';
-        const values = [pProduto.idCategoria, pProduto.nomeProduto, pProduto.valorProduto, pProduto.vinculoImagem, pProduto.dataCad, pProduto.idProduto];
-        const [rows] = await pool.execute(sql, values);
-        return rows;
     }
-}
+
+};
 
 export default categorias;

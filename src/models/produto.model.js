@@ -1,23 +1,65 @@
 import pool from "../config/db.js";
 
 const produtos = {
-    insert:async (pProduto) => {
-        const sql = 'INSERT INTO produtos (id_produto, id_categoria, nome_produto, valor_produto, vinculo_imagem, data_cad) VALUES (?,?,?,?,?,?);';
-        const values = [pProduto.id_produto, pProduto.id_categoria, pProduto.nome_produto, pProduto.valor_produto, pProduto.vinculo_imagem, pProduto.data_cad];
-        const [rows] = await pool.execute(sql, values);
-        return rows;
-    }, 
+
+    // Criar produto
+    criarProduto: async (produto) => {
+
+        const sql = `
+            INSERT INTO produtos 
+            (id_categoria, nome_produto, valor_produto, vinculo_imagem, data_cad)
+            VALUES (?, ?, ?, ?, ?);
+        `;
+
+        const values = [
+            produto.idCategoria ?? null,
+            produto.nomeProduto ?? null,
+            produto.valorProduto ?? null,
+            produto.vinculoImagem ?? null,
+            produto.dataCad ?? null
+        ];
+
+        console.log("VALORES INSERT:", values);
+
+        const [result] = await pool.execute(sql, values);
+        return result;
+    },
+
+    // Listar todos
     selectALL: async () => {
         const sql = "SELECT * FROM produtos;";
         const [rows] = await pool.execute(sql);
         return rows;
     },
-    updateProduto: async (pProduto) => {
-        const sql = 'UPDATE Produtos SET idCategoria = ?, nomeProduto = ?, valorProduto = ?, vinculoImagem = ?, dataCad = ? WHERE idProduto = ?';
-        const values = [pProduto.idCategoria, pProduto.nomeProduto, pProduto.valorProduto, pProduto.vinculoImagem, pProduto.dataCad, pProduto.idProduto];
-        const [rows] = await pool.execute(sql, values);
-        return rows;
+
+    // Atualizar produto
+    updateProduto: async (produto) => {
+
+        const sql = `
+            UPDATE produtos 
+            SET id_categoria = ?,
+                nome_produto = ?,
+                valor_produto = ?,
+                vinculo_imagem = ?,
+                data_cad = ?
+            WHERE id_produto = ?;
+        `;
+
+        const values = [
+            produto.idCategoria ?? null,
+            produto.nomeProduto ?? null,
+            produto.valorProduto ?? null,
+            produto.vinculoImagem ?? null,
+            produto.dataCad ?? null,
+            produto.idProduto
+        ];
+
+        console.log("VALORES UPDATE:", values);
+
+        const [result] = await pool.execute(sql, values);
+        return result;
     }
-}
+
+};
 
 export default produtos;
