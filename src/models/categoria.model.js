@@ -1,6 +1,6 @@
 import pool from "../config/db.js";
 
-const produtos = {
+const categorias = {
     insert:async (pProduto) => {
         const sql = 'INSERT INTO produtos (id_categoria, descricao_categoria, data_cad) VALUES (?,?,?);';
         const values = [pProduto.id_categoria, pProduto.descricao_categoria, pProduto.data_cad];
@@ -20,4 +20,4 @@ const produtos = {
     }
 }
 
-export default produtos;
+export default categorias;

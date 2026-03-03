@@ -1,7 +1,5 @@
-// Importa o model responsável pelas operações no banco de dados
-import produtoModel from "../models/produtoModel.js";
+import produtos from "../models/produto.model.js";
 
-// Objeto controlador responsável pelas requisições relacionadas a produtos
 const produtoController = {
 
     // Função responsável pelo upload de arquivo (ex: imagem do produto)
@@ -35,7 +33,7 @@ const produtoController = {
             console.log(dadosProduto);
 
             // Chama o model para inserir os dados no banco
-            const resposta = await produtoModel.criarProduto({
+            const resposta = await produtos.criarProduto({
                 idCategoria: dadosProduto.idCategoria,
                 nomeProduto: dadosProduto.nomeProduto,
                 valorProduto: dadosProduto.valorProduto,
@@ -64,7 +62,7 @@ const produtoController = {
     // Função responsável por listar todos os produtos
     listarTodos: async (req, res) => {
         try {
-            const listaProdutos = await produtoModel.selecionarTodos();
+            const listaProdutos = await produtos.selecionarTodos();
 
             return res.status(200).json(listaProdutos);
 

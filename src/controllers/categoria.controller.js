@@ -1,7 +1,5 @@
-// Importa o model responsável pelas operações da tabela de categorias
-import categoriaModel from "../models/categoriaModel.js";
+import categorias from "../models/categoria.model.js";
 
-// Objeto controlador responsável pelas requisições relacionadas a categorias
 const categoriaController = {
 
     // Função responsável por cadastrar uma nova categoria
@@ -12,7 +10,7 @@ const categoriaController = {
             console.log(dadosCategoria);
 
             // Chama o model para inserir a categoria no banco de dados
-            const resposta = await categoriaModel.criarCategoria({
+            const resposta = await categorias.criarCategoria({
                 descricaoCategoria: dadosCategoria.descricaoCategoria,
                 dataCadastro: dadosCategoria.dataCad
             });
@@ -39,7 +37,7 @@ const categoriaController = {
     // Função responsável por listar todas as categorias
     listarTodas: async (req, res) => {
         try {
-            const listaCategorias = await categoriaModel.selecionarTodos();
+            const listaCategorias = await categorias.selecionarTodos();
 
             return res.status(200).json(listaCategorias);
 
